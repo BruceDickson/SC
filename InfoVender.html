@@ -1,0 +1,195 @@
+<div id ="venderContent" class="">
+	<div class="x_panel">
+    	<div class="x_title">
+			<h2>Informações do Pedido</h2>    
+			<ul class="nav navbar-right panel_toolbox">
+                <!--<button type="button" id="botaotoggle" class="fa fa-chevron-up"></button>   -->                                       
+        	</ul>
+		<div class="clearfix"></div>
+		</div>
+	
+		<div class="x_content">
+			<form id="forminfo">		
+				<div class="row">													
+					<div class="form-group">										
+						<div class="col-md-1">		
+							<label class="control-label col-md-10">N° Pedido</label>							
+							<input type="text" id="Npedido" readonly="true" class="form-control col-md-2"/>
+						</div>
+						<div class="col-md-5"></div>													
+						<div class="col-md-2">		
+							<label class="control-label col-md-8">Data Venda</label>							
+							<input type="text" id="dataVenda" class="form-control col-md-2"/>
+						</div>
+					</div>
+				</div>	
+				<div class="row">
+					<div class="form-group">										
+						<div class="col-md-4">		
+							<label class="control-label col-md-2">Empresa</label>							
+							<select  id="empresa"  class="form-control col-md-4">
+						    	<option value="-1"></option>
+						    <select>   
+						</div>
+						<div class="col-md-2"></div>																
+						<div class="col-md-2">		
+							<label class="control-label col-md-1">Telefone</label>							
+							<input type="text" readonly="true" id="telefone" class="form-control col-md-4"/>
+						</div>		
+					</div>						
+				</div>	
+				<div class="row">
+					<div class="form-group">										
+						<div class="col-md-4">		
+							<label class="control-label col-md-1">Endereço</label>							
+							<input type="text" readonly="true" id="endereco" class="form-control col-md-4"/>
+						</div>
+					</div>											
+				</div>
+				<div class="row">
+					<div class="form-group">										
+						<div class="col-md-4">		
+							<label class="control-label col-md-1">Cidade</label>							
+							<input type="text" readonly="true" id="cidade" class="form-control col-md-4"/>
+						</div>
+					</div>	
+				</div>	
+			</form>		    			
+
+		
+			 
+				
+		    </div>
+			<div class="col-md-5"></div>
+				<div >
+					<button type="button" id="btnConfirma" class="btn btn-danger btn-lg">Confirmar</button>
+				</div>
+		    </div>
+</div> 
+          
+
+<script>
+function getFormattedDate(date) {
+    var year = date.getFullYear();
+
+    var month = (1 + date.getMonth()).toString();
+    month = month.length > 1 ? month : '0' + month;
+
+    var day = date.getDate().toString();
+    day = day.length > 1 ? day : '0' + day;
+    
+    return day + '/' + month + '/' + year;
+}
+
+$(function(){
+    $( "#dataVenda" ).datepicker({
+        dateFormat: 'dd/mm/yy',
+        dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+        dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+        dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+        monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+        monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+    });
+
+    var date = new Date();
+    $('#dataVenda').val(getFormattedDate(date));
+
+    $.ajax({
+    type:'get',   //Definimos o método HTTP usado
+    dataType: 'json', //Definimos o tipo de retorno
+    url: 'http://localhost/ApiSC/public/empresas',//Definindo o arquivo onde serão buscados os dados
+    success: function(data){
+        for(i=0; i<data.length; i++){       
+        $('#empresa').append('<option value="'+data[i].EMPRESA_id+'">'+data[i].EMPRESA_nome+'</option>');
+        }
+            
+    }
+    });
+
+    $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: 'http://localhost/ApiSC/public/lastvenda',
+        success: function(data){
+            document.getElementById('Npedido').value = data[0].id;
+        }
+
+    });
+
+   /* $('#botaotoggle').click(function(){
+			console.log('entrou');
+			$("#forminfo").collapse('toggle');
+	});*/
+
+    $('#empresa').change(function(){
+    var id = $(this).val();
+
+
+    if(id == '-1'){
+        document.getElementById('telefone').value = "";     
+        document.getElementById('endereco').value = "";
+        document.getElementById('cidade').value = "";   
+    }else{
+        $.ajax({
+        type:'get',   //Definimos o método HTTP usado
+        dataType: 'json', //Definimos o tipo de retorno
+        url: 'http://localhost/ApiSC/public/empresa/'+id+'',//Definindo o arquivo onde serão buscados os dados
+        success: function(data){                  
+            document.getElementById('telefone').value = data[0].EMPRESA_telefone;     
+            document.getElementById('endereco').value = data[0].ENDERECO_rua + ", " + data[0].ENDERECO_numero ; 
+            document.getElementById('cidade').value = data[0].ENDERECO_cidade;          
+        }
+        });
+    }
+
+    });
+
+    $('#btnConfirma').click(function(){
+        var empresa = $('#empresa').val(); 
+        var Nempresa = $('#empresa option:selected').text();            
+        var usuario = 1; // usuario cleiton
+        var valor = '0'; 
+        var cidade = $('#cidade').val();
+
+        //Pegue a data no formato dd/mm/yyyy
+        var data = $('#dataVenda').val();
+        //Exploda a data para entrar no formato aceito pelo DB.
+        var dataP = data.split("/");			
+        var dataBanco = dataP[2]+'-'+dataP[1]+'-'+dataP[0];			
+        
+        //Na hora de pegar a data do BD e exibir na tela, faça a mesma coisa que fiz acima, porém troquei '-' por '/':
+        //$data = $row['dataDoBanco'];
+        //$dataP = explode('-', $data);
+        //$dataParaExibir = $dataP[2].'/'.$dataP[1].'/'.$dataP[0];
+
+    if(empresa != -1){        
+        $.ajax({
+            url: 'http://localhost/ApiSC/public/venda',
+            type: 'post',
+            data: {
+            valor: valor,
+            date: dataBanco,
+            EMPRESA_id: empresa,
+            USUARIO_id: usuario      
+            },
+            success: function( data, textStatus, jQxhr ){                
+                $('#venderContent').load('pages/vender.html',function(){
+                    $('#empresa').val(Nempresa);
+                    $('#cidade').val(cidade);                                    
+
+                }); 
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+            }
+        });
+         
+       
+             
+    }else{
+    alert('O campo Empresa precisa ser preenchido');          
+    }
+});
+
+});
+</script>

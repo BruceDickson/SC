@@ -1,0 +1,66 @@
+          <div class="">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>Lista de Produtos </h2>                    
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <!-- <p class="text-muted font-13 m-b-30">
+                  The Buttons extension for DataTables provides a common set of options, API methods and styling to display buttons on a page that will interact with a DataTable. The core library provides the based framework upon which plug-ins can built.
+                </p> -->
+                
+                <table id="datatable-buttons" class="table table-striped table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Cod </th>
+                      <th>Produto</th>
+                      <th>Preço Venda</th>    
+                    <th>Preço Compra</th> 
+                    <th>qtd</th>
+                    <th>uni.</th>
+                    </tr>
+                  </thead>
+
+
+                  <tbody>                   
+                    
+                  </tbody>
+                </table>
+
+              </div>
+            </div>
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+    
+    $.ajax({
+    type: 'get',
+    dataType: 'json',
+    url: 'http://localhost/ApiSC/public/produtos',
+    success: function(data){
+        var table_data = '';
+        $('#datatable-buttons').html('<thead><tr><th>cod </th><th>Produto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+        +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+        +'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>'
+        +'<th>Preço Venda&nbsp;&nbsp;&nbsp;</th>'
+        +'<th>Preço Compra</th>'
+        +'<th>Qtd</th><th>uni.</th></tr></thead><tbody></tbody>');
+
+        $.each(data, function(key, value){
+        table_data += '<tr>';
+            table_data += '<td>'+value.id+'</td>';
+            table_data += '<td>'+value.nome+'</td>';
+            table_data += '<td>'+value.precoVenda+'</td>';
+            table_data += '<td>'+value.precoCompra+'</td>';
+            table_data += '<td>'+value.qtd+'</td>';
+            table_data += '<td>cx</td>';
+            table_data += '</td>';
+        });
+        $('#datatable-buttons').append(table_data);
+    }
+    });
+
+});
+</script>            

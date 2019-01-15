@@ -1,0 +1,102 @@
+    
+          <div class="">
+             <div class="x_panel">
+                <div class="x_title">
+					<h2>Cadastrar Empresa</h2>    
+					<ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>                                           
+                    </ul>
+				<div class="clearfix"></div>
+				</div>
+				
+            
+                        
+            <div class="x_content">
+					<form>		
+						<div class="row">		
+						<div class="col-md-1"></div>						
+							<div class="form-group">										
+								<div class="col-md-4">		
+									<label class="control-label col-md-12" >Nome da Empresa </label>							
+									<input type="text" id="Nempresa" name="NEmpresa" value="" required="required" autofocus class="form-control col-md-2"/>
+								</div>								
+							
+								<div class="col-md-2"></div>																	
+								<div class="col-md-2">		
+									<label class="control-label col-md-1" >CNPJ</label>  
+                  <input type="text" id="cnpj" name="cnpj"  class="form-control col-md-2"/>   
+								</div>	
+							</div>
+						</div>	
+						<div class="row">
+							<div class="form-group" >
+							<div class="col-md-1"></div>																
+								<div class="col-md-4">		
+									<label class="control-label col-md-12" >Endereço</label>							
+									<select  id="endereco"  class="form-control col-md-4">
+                      <option></option>
+                  <select>                    
+								</div>														
+							</div>
+              <div class="col-md-2"></div>                                  
+                <div class="col-md-2">    
+                  <label class="control-label col-md-1" >Telefone</label>  
+                  <input type="text" id="telefone"  class="form-control col-md-2"/>   
+                </div>  
+						</div>												
+					</form>
+					<br>
+					<div class="col-md-5"></div>
+					<div >
+						<button type="button" id="btnCadastrar" class="btn btn-danger btn-lg">Cadastrar</button>
+					</div>
+					</div>
+				
+            </div>
+			</div>									                         
+        <!-- /page content -->
+
+<script type="text/javascript">
+  $(function(){
+  $.ajax({
+      type:'get',   //Definimos o método HTTP usado
+      dataType: 'json', //Definimos o tipo de retorno
+      url: 'http://localhost/ApiSC/public/enderecos',//Definindo o arquivo onde serão buscados os dados
+      success: function(data){      
+        for(i=0; i<data.length; i++){       
+          $('#endereco').append('<option value="'+data[i].id+'">'+data[i].rua+'</option>');
+        }
+      }
+    });
+
+  $('#btnCadastrar').click(function(){
+    var Nempresa = $('#Nempresa').val();  
+    var cnpj = $('#cnpj').val();    
+    var endereco = $('#endereco').val();
+    var telefone = $('#telefone').val();    
+              
+    if(Nempresa.length != 0){       
+      $.ajax({
+        url: 'http://localhost/ApiSC/public/empresa',
+        type: 'post',
+        data: {
+          nome: Nempresa,
+          telefone: telefone,
+          cnpj: cnpj,         
+          ENDERECO_id: endereco
+        },
+        success: function( data, textStatus, jQxhr ){
+          alert('Cadastro de empresa realizado com sucesso!');
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+          console.log( errorThrown );
+        }
+      });
+    }else{
+      alert('O campo Nome da Empresa precisa ser preenchido');
+      $('#Nempresa').focus();       
+    }
+  });
+});
+</script>
