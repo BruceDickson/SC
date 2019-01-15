@@ -39,20 +39,25 @@
 								</div>	
 								<div class="col-md-1"></div>													
 								<div class="col-md-2">		
-									<label class="control-label col-md-12">Preço Venda</label>							
+									<label class="control-label col-md-12">Preço de Venda</label>							
 									<input type="text" id="Pvenda" class="form-control col-md-2"/>
-								</div>									
+                </div>									
 							</div>
 						</div>	
 						<div class="row">
 							<div class="col-md-1"></div>	
 							<div class="form-group">										
-								<div class="col-md-3">		
+								<div class="col-md-2">		
 									<label class="control-label col-md-1">Categoria</label>							
 									<select id="categoria" class="form-control col-md-7 col-xs-12">   
                   <option></option>               
                   </select>
-								</div>
+                </div>				
+                <div class="col-md-1"></div>									
+								<div class="col-md-1">		
+									<label class="control-label col-md-5">Quantidade/caixa</label>							
+									<input type="text" id="qtdCx" class="form-control col-md-2"/>
+								</div>	
 							</div>												
 						</div>						
 					</form>
@@ -93,9 +98,10 @@
       var Nproduto = $('#Nproduto').val();
       var Pcompra = $('#Pcompra').val();      
       var Pvenda = $('#Pvenda').val();    
-      var categoria = $('#categoria').val();      
+      var categoria = $('#categoria').val();  
+      var qtdCx = $('#qtdCx').val();     
 
-      if(Nproduto.length != 0){       
+      if(Nproduto.length != 0 && qtdCx.length != 0){       
         $.ajax({
           url: 'http://localhost/ApiSC/public/produto',
           type: 'post',
@@ -104,6 +110,7 @@
             qtd: "0",
             precoVenda: Pvenda,
             precoCompra: Pcompra,
+            cx: qtdCx,
             CATEGORIA_id: categoria
           },
           success: function( data, textStatus, jQxhr ){
@@ -114,7 +121,7 @@
           }
         });
       }else{
-        alert('O campo Nome Do Produto precisa ser preenchido');
+        alert('Os campos Nome e quantidade/caixa precisam ser preenchidos');
         $('#Nproduto').focus();     
       }
     });

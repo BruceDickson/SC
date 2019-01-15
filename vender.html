@@ -65,6 +65,9 @@
 									<input id="idProduto" type="hidden" class="form-control col-md-2 " />
 								</div>
 								<div class="col-md-1">
+									<input id="cx" type="hidden" class="form-control col-md-2 " />
+								</div>
+								<div class="col-md-1">
 									<input id="nomeProduto" type="hidden" class="form-control col-md-2 " />
 								</div>
 								<div class="col-md-1">		
@@ -176,14 +179,9 @@
 	// }
 
 	$(function(){
-		//$('#cidade').val('JOAO');
-		// console.log($('#cidade').val());
-		// var z = $('#ids').val();
-		// console.log($('#ids').val());
 	  var date = new Date();
 	  $('#dataVenda').val(getFormattedDate(date));
-		
-		
+
 	  // $.ajax({
 	  //   type:'get',   
 	  //   dataType: 'json', 
@@ -201,7 +199,6 @@
 			dataType: 'json',
 			url: 'http://localhost/ApiSC/public/lastvenda',
 			success: function(data){
-				console.log(data);
 				document.getElementById('Npedido').value = (data[0].id - 1);
 			}
 		});
@@ -217,51 +214,6 @@
 			}
 		});
 
-
-
-		/*$('#nome').autocomplete({
-			source: function(request, response){
-				$.ajax({
-					type: 'get',
-					dataType: 'json',
-					url: 'http://localhost/ApiSC/public/produtos',
-					success: function(data){
-						response(data);
-					}
-				});
-			},
-			minLength: 1,
-			select: function(event, ui){
-				alert("Seleciona:"+ui.item.label);
-			}
-		});*/
-
-		// $('#NProduto').keyup(function(){
-		// 	var produto = $(this).val();
-		// 	var xproduto = removeAcento(produto);
-		// 	$.ajax({
-		// 		type: 'get',
-		// 		dataType: 'json',
-		// 		url: 'http://localhost/ApiSC/public/produtos',
-		// 		success: function(data){
-		// 			var s = '';
-		// 			for(var i=0; i<data.length; i++){	
-		// 				var xinput = removeAcento(data[i].nome);
-		// 				var x=0;
-		// 				if(x<=5 && xproduto.length !=0 && xinput.startsWith(xproduto)){
-		// 					$('#NProduto').editableSelect('clear');	
-		// 					s += '<option value="'+data[i].id+'">'+data[i].nome+'</option>';
-		// 					$('#NProduto').editableSelect('add', s );
-		// 					//$('#NProduto').editableSelect('show');	
-		// 					x++;				
-		// 				}
-
-		// 			}
-		// 			//$('#NProduto').editableSelect('show');
-		// 		}
-		// 	});
-		// });
-		
 		$('#NProduto').autocomplete({
 			source: function(request, response){
 				$.ajax({
@@ -272,11 +224,12 @@
 						name: request.term                    
 					},
 					success: function(data){
-					  response($.map(data, function(item){
+					  response($.map(data, function(item){					
 							return {
 								label: item.nome,
 								value: item.nome,
-								id: item.id							
+								id: item.id,
+								cx: item.cx							
 							}
 						}));
 					}
@@ -286,8 +239,8 @@
 			// 	event.preventDefault();
 				$('#idProduto').val(ui.item.id);
 				$('#nomeProduto').text(ui.item.label);
+				$('#cx').val(ui.item.cx);				
 				var x = $('#nomeProduto').text();
-			// 	//alert("Seleciona:"+ui.item.nome);
 			},
 			minLength: 0,
 			autoFocus: true
@@ -343,92 +296,86 @@
 				//"bSort": false,
 				
 		});
-		t.buttons().container().appendTo( $('.col-sm-6:eq(0)', t.table().container() ) );
+	t.buttons().container().appendTo( $('.col-sm-6:eq(0)', t.table().container() ) );
  
     $('#addrow').on( 'click', function () {
-				var nPedido = $('#Npedido').val();
-				var qtd = $('#qtd').val();
-				var preco = $('#preco').val();
-				var idProduto = $('#idProduto').val();
-				var unidade = $('#unidades').val();
-				var unidadeTxt = $('#unidades').text();
-				var nomeProduto = $('#nomeProduto').text();
-				var btn = '<button type="button" class="btn btn-danger btn-xs " style="width: 100%; height: 100%;" >delete</button>';
+		var nPedido = $('#Npedido').val();
+		var qtd = $('#qtd').val();
+		var preco = $('#preco').val();
+		var idProduto = $('#idProduto').val();
+		var qtdCx = $('#cx').val();
+		var unidade = $('#unidades').val();
+		var unidadeTxt = $('#unidades').text();
+		var nomeProduto = $('#nomeProduto').text();
+		var btn = '<button type="button" class="btn btn-danger btn-xs " style="width: 100%; height: 100%;" >delete</button>';
 
-				
-				
-		
-				if(nomeProduto && idProduto && preco && qtd){       
-        $.ajax({
-          url: 'http://localhost/ApiSC/public/itemvenda',
-          type: 'post',
-          data: {
-            qtd: qtd,
-            valor: 0,
-            VENDA_id: nPedido,
-            PRODUTO_id: idProduto,
-            UNIDADE_id: unidade
-          },
-          success: function( data, textStatus, jQxhr ){
-						var k = JSON.parse(data);
-						idItemVenda = k[0].id;
-						valorTotal += parseFloat(preco) * parseInt(qtd);
-						$('#totalVenda').text('Total: R$ '+ valorTotal +',00');
-						// var html = '<tr>';
-						// html += '<td id="data1">'+ idProduto +'</td>'; // COLOCAR'<td contenteditable id="data1"> para editar celula
-						// html += '<td id="data2">'+ nomeProduto +'</td>';
-						// html += '<td id="data3">'+ preco +'</td>';
-						// html += '<td id="data4">'+ qtd +'</td>';
-						// html += '<td id="data5">'+ unidadeTxt +'</td>';
-						// html += '<td style="padding: 5px 0 0 5px; text-align: center; vertical-align: middle;"><button type="button" id="delete" class="btn btn-danger btn-xs">delete</button></td>';
-						// html += '</tr>';
-						// $('#tabela_pedido tbody').prepend(html);
-						
-						// t.row.add( [ // PODE USAR ASSIM TAMBEM
-						// 	idProduto,
-						// 	nomeProduto,
-						// 	preco,
-						// 	qtd,
-						// 	unidadeTxt,
-						// 	btn
-						// ] ).draw( false );
-						// var html = '<tr>';
-						// html += '<td id="data1">'+ idProduto +'</td>'; // COLOCAR'<td contenteditable id="data1"> para editar celula
-						// html += '<td id="data2">'+ nomeProduto +'</td>';
-						// html += '<td id="data3">'+ preco +'</td>';
-						// html += '<td id="data4">'+ qtd +'</td>';
-						// html += '<td id="data5">'+ unidadeTxt +'</td>';
-						// html += '<td style="padding: 5px 0 0 5px; text-align: center; vertical-align: middle;"><button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button></td>';
-						// html += '</tr>';
-						t.row.add( [ // PODE USAR ASSIM TAMBEM
-							'<td id="data1">'+ idProduto +'<td/>',
-							'<td id="data2">'+ nomeProduto +'<td/>',
-							'<td id="data3">'+ preco +'<td/>',
-							'<td id="data4">'+ qtd +'<td/>',
-							'<td id="data5">'+ unidadeTxt +'<td/>',
-							'<button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button>',
-							'<td>'+ idItemVenda +'<td/>'
-						] ).draw();
+		preco = preco.replace(",", ".");
+
+		if(nomeProduto && idProduto && preco && qtd){       
+			$.ajax({
+				url: 'http://localhost/ApiSC/public/itemvenda',
+				type: 'post',
+				data: {
+					qtd: qtd,
+					valor: 0,
+					VENDA_id: nPedido,
+					PRODUTO_id: idProduto,
+					UNIDADE_id: unidade
+				},
+				success: function( data, textStatus, jQxhr ){
+					var pValor;
+					var k = JSON.parse(data);
+					idItemVenda = k[0].id;
+					var valorParcial = parseFloat(preco) * parseInt(qtd);
+
+					if(unidade == 1) valorParcial *= parseInt(qtdCx); // CX
+					valorTotal += valorParcial;
+					valorTotal = valorTotal.toFixed(2);
+					valorTotal = parseFloat(valorTotal);
 					
-					  //t.order([1, 'desc']).draw();
-        		//t.order([0, 'desc']).draw();
-						//$('#tabela_pedido tbody').prepend(html);b 
-            // //alert('Item inserido na venda com sucesso!');						
-          },
-          error: function( jqXhr, textStatus, errorThrown ){
-            console.log( errorThrown );
+					pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					$('#totalVenda').text('Total: '+ pValor);
+					
+					// t.row.add( [ // PODE USAR ASSIM TAMBEM
+					// 	idProduto,
+					// 	nomeProduto,
+					// 	preco,
+					// 	qtd,
+					// 	unidadeTxt,
+					// 	btn
+					// ] ).draw( false );
+					// var html = '<tr>';
+					// html += '<td id="data1">'+ idProduto +'</td>'; // COLOCAR'<td contenteditable id="data1"> para editar celula
+					// html += '<td id="data2">'+ nomeProduto +'</td>';
+					// html += '<td id="data3">'+ preco +'</td>';
+					// html += '<td id="data4">'+ qtd +'</td>';
+					// html += '<td id="data5">'+ unidadeTxt +'</td>';
+					// html += '<td style="padding: 5px 0 0 5px; text-align: center; vertical-align: middle;"><button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button></td>';
+					// html += '</tr>';
+					t.row.add( [ // PODE USAR ASSIM TAMBEM
+						'<td id="data1">'+ idProduto +'<td/>',
+						'<td id="data2">'+ nomeProduto +'<td/>',
+						'<td id="data3">'+ preco +'<td/>',
+						'<td id="data4">'+ qtd +'<td/>',
+						'<td id="data5">'+ unidadeTxt +'<td/>',
+						'<button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button>',
+						'<td>'+ idItemVenda +'<td/>'
+								] ).draw();			
+				},
+				error: function( jqXhr, textStatus, errorThrown ){
+					console.log( errorThrown );
 						alert('Produto inválido!');
-          }
-        });
-
-				$('#NProduto').val('');
-				$('#NProduto').focus();
-				$('#qtd').val('');
-				$('#preco').val('');
-				}else{
-					alert('Os campos precisam ser corretamente preenchidos!');
-					$('#Nproduto').focus();     
 				}
+			});
+
+		$('#NProduto').val('');
+		$('#NProduto').focus();
+		$('#qtd').val('');
+		$('#preco').val('');
+		}else{
+			alert('Os campos precisam ser corretamente preenchidos!');
+			$('#Nproduto').focus();     
+		}
     });
 
 
@@ -460,21 +407,31 @@
     var dataBanco = dataP[2]+'-'+dataP[1]+'-'+dataP[0];
 		
 		$('#btnVender').on('click', function(){
-			var idVenda = $('#Npedido').val();
-			$.ajax({
-          url: 'http://localhost/ApiSC/public/venda/'+ idVenda,
-          type: 'post',
-					dataType: 'json',
-          data: {
-            valor: valorTotal,
-            date: dataBanco,
-          },
-					success: function(data){
-						alert('Compra Finalizada');
-						window.location.replace("index.html"); // CARREGA A PAGINA INICIAL
-					},
-			});
+			if(!t.data().count()){
+				alert("Nenhum produto inserido na venda");
+			}else{
+				var idVenda = $('#Npedido').val();
+				$.ajax({
+						url: 'http://localhost/ApiSC/public/venda/'+ idVenda,
+						type: 'post',
+						dataType: 'json',
+						data: {
+							valor: valorTotal,
+							date: dataBanco,
+						},
+						success: function(data){
+							alert('Venda Finalizada');
+							window.location.replace("index.html"); // CARREGA A PAGINA INICIAL
+						},
+				});
+			}
 		});
+		
+  
+
+	// $(window).bind('beforeunload', function(){
+	// 	return '>>>>>Before You Go<<<<<<<< \n Your custom message go here';
+	// });
 		
 
 	});
