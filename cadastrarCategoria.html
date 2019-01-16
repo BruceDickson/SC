@@ -1,0 +1,64 @@
+    
+<div class="">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Cadastrar Categoria</h2>    
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>                                           
+            </ul>
+            <div class="clearfix"></div>
+        </div>      
+    <div class="x_content">
+        <form>		
+            <div class="row">		
+                <div class="col-md-1"></div>						
+                    <div class="form-group">										
+                        <div class="col-md-4">		
+                            <label class="control-label col-md-12" >Nome da Categoria </label>							
+                            <input type="text" id="nCategoria" name="nCategoria" value="" required="required" autofocus class="form-control col-md-2"/>
+                        </div>	
+                    </div>	
+            </div>	                                                                 
+        </form>
+        <br>
+        <div class="col-md-5"></div>
+        <div >
+            <button type="button" id="btnCadastrar" class="btn btn-danger btn-lg">Cadastrar</button>
+        </div>
+    </div>
+        
+    </div>
+</div>									                         
+       <!-- /page content -->
+
+<script type="text/javascript">
+
+ $(function(){
+
+    $('#btnCadastrar').click(function(){
+    var nCategoria = $('#nCategoria').val();  
+                
+    if(nCategoria.length != 0){       
+        $.ajax({
+        url: 'http://localhost/ApiSC/public/categoria',
+        type: 'post',
+        data: {
+            nomeCategoria: nCategoria
+        },
+        success: function( data, textStatus, jQxhr ){
+            alert('Cadastro de categoria realizado com sucesso!');
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+        }
+        });
+        $('#nCategoria').val(''); 
+        $('#nCategoria').focus(); 
+    }else{
+        alert('O campo Nome da Categoria precisa ser preenchido');
+        $('#nCategoria').focus();       
+    }
+    });
+});
+</script>

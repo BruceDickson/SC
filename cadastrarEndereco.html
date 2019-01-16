@@ -1,0 +1,114 @@
+    
+<div class="">
+    <div class="x_panel">
+        <div class="x_title">
+            <h2>Cadastrar Endereço</h2>    
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>                                           
+            </ul>
+        <div class="clearfix"></div>
+        </div>
+        
+
+                
+        <div class="x_content">
+                <form>		
+                    <div class="row">		
+                    <div class="col-md-1"></div>						
+                        <div class="form-group">										
+                            <div class="col-md-4">		
+                                <label class="control-label col-md-12" >Rua </label>							
+                                <input type="text" id="rua" name="rua" value="" required="required" autofocus class="form-control col-md-2"/>
+                            </div>								                        
+                            <div class="col-md-1"></div>																	
+                            <div class="col-md-1">		
+                                <label class="control-label col-md-1" >Número</label>  
+                                <input type="text" id="numero" name="numero"  class="form-control col-md-2"/>   
+                            </div>	
+                        </div>
+                    </div>	
+                    <div class="row">
+                        <div class="form-group" >
+                            <div class="col-md-1"></div>																
+                            <div class="col-md-3">		
+                                <label class="control-label col-md-12" >Bairro</label>							
+                                <input type="text" id="bairro" name="bairro"  class="form-control col-md-2"/>                      
+                            </div>														
+                                
+                            <div class="col-md-2"></div>																
+                            <div class="col-md-2">		
+                                <label class="control-label col-md-12" >Cep</label>							
+                                <input type="text" id="cep" name="cep"  class="form-control col-md-2"/>                      
+                            </div>
+                        </div> 														
+                    </div>                                           
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-md-1"></div>                                  
+                            <div class="col-md-3">    
+                                <label class="control-label col-md-1" >Cidade</label>  
+                                <input type="text" id="cidade"  class="form-control col-md-2"/>   
+                            </div>  
+                            <div class="col-md-2"></div>																
+                            <div class="col-md-1">		
+                                <label class="control-label col-md-12" >UF</label>							
+                                <input type="text" id="uf" name="uf"  class="form-control col-md-2"/>                      
+                            </div>	
+                        </div>
+                    </div> 											
+                </form>
+        </div>
+            <br>
+            <div class="col-md-5"></div>
+            <div >
+                <button type="button" id="btnCadastrar" class="btn btn-danger btn-lg">Cadastrar</button>
+            </div>
+    </div>
+</div>									                         
+       <!-- /page content -->
+
+<script type="text/javascript">
+$(function(){
+
+    $('#btnCadastrar').click(function(){
+    var rua = $('#rua').val();  
+    var numero = $('#numero').val();    
+    var bairro = $('#bairro').val();
+    var cep = $('#cep').val();    
+    var cidade = $('#cidade').val();    
+    var uf = $('#uf').val();    
+                
+    if(rua.length != 0 && cidade.length != 0){       
+        $.ajax({
+        url: 'http://localhost/ApiSC/public/endereco',
+        type: 'post',
+        data: {
+            rua: rua,
+            cep: cep,
+            numero: numero,     
+            bairro: bairro,
+            cidade: cidade,
+            uf: uf,
+        },
+        success: function( data, textStatus, jQxhr ){
+            alert('Cadastro de endereço realizado com sucesso!');
+        },
+        error: function( jqXhr, textStatus, errorThrown ){
+            console.log( errorThrown );
+        }
+        });
+        $('#rua').val('');      
+        $('#numero').val(''); 
+        $('#bairro').val(''); 
+        $('#cep').val(''); 
+        $('#cidade').val(''); 
+        $('#uf').val(''); 
+        $('#rua').focus(); 
+    }else{
+        alert('Os campos Rua e Cidade precisam ser preenchidos');
+        $('#rua').focus();       
+    }
+    });
+});
+</script>

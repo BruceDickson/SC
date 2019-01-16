@@ -1,0 +1,72 @@
+    
+<div class="">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Cadastrar Unidade</h2>    
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>                                           
+                </ul>
+                <div class="clearfix"></div>
+            </div>      
+        <div class="x_content">
+            <form>		
+                <div class="row">		
+                    <div class="col-md-1"></div>						
+                        <div class="form-group">										
+                            <div class="col-md-4">		
+                                <label class="control-label col-md-12" >Nome da Unidade </label>							
+                                <input type="text" id="nUnidade" name="nUnidade" value="" required="required" autofocus class="form-control col-md-2"/>
+                            </div>	
+                            <div class="col-md-1"></div>
+                            <div class="col-md-2">		
+                                <label class="control-label col-md-12" >Qtd/Unidades </label>							
+                                <input type="text" id="qtd" name="qtd" value="" required="required" autofocus class="form-control col-md-2"/>
+                            </div>	
+                        </div>	
+                </div>	                                                                 
+            </form>
+            <br>
+            <div class="col-md-5"></div>
+            <div >
+                <button type="button" id="btnCadastrar" class="btn btn-danger btn-lg">Cadastrar</button>
+            </div>
+        </div>
+            
+        </div>
+    </div>									                         
+           <!-- /page content -->
+    
+    <script type="text/javascript">
+    
+     $(function(){
+    
+        $('#btnCadastrar').click(function(){
+        var nUnidade = $('#nUnidade').val();
+        var qtdUnidade = $('#qtd').val();
+                    
+        if(nUnidade.length != 0 && qtdUnidade.length != 0){       
+            $.ajax({
+            url: 'http://localhost/ApiSC/public/unidade',
+            type: 'post',
+            data: {
+                unidade: nUnidade,
+                qtd: qtdUnidade
+            },
+            success: function( data, textStatus, jQxhr ){
+                alert('Cadastro de unidade realizado com sucesso!');
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                console.log( errorThrown );
+            }
+            });
+            $('#nUnidade').val(''); 
+            $('#qtd').val('');
+            $('#nUnidade').focus(); 
+        }else{
+            alert('Os campos precisam ser preenchidos');
+            $('#nUnidade').focus();       
+        }
+        });
+    });
+    </script>
