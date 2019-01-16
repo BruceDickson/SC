@@ -21,9 +21,11 @@
                 <div class="col-md-4">    
                   <label class="control-label col-md-12" >Nome do Fornecedor </label>              
                   <input type="text" id="Nempresa" name="NEmpresa" required="required" autofocus class="form-control col-md-2"/>
-                </div>                
-              
-                <div class="col-md-2"></div>                                  
+                </div>   
+                <div class="col-md-1">
+                  <input id="idEndereco" type="hidden" class="form-control col-md-2 " />
+                </div>                           
+                <div class="col-md-1"></div>                                  
                 <div class="col-md-2">    
                   <label class="control-label col-md-1" >CNPJ</label>  
                   <input type="text" id="cnpj" name="cnpj"  class="form-control col-md-2"/>   
@@ -35,9 +37,7 @@
               <div class="col-md-1"></div>                                
                 <div class="col-md-4">    
                   <label class="control-label col-md-12" >Endereço</label>              
-                  <select  id="endereco"  class="form-control col-md-4">
-                      <option></option>
-                  <select>                    
+                  <input type="text" id="endereco" name="endereco"  class="form-control col-md-2"/>                
                 </div>                            
               </div>
               <div class="col-md-2"></div>                                  
@@ -59,30 +59,45 @@
         <!-- /page content -->
 
 <script type="text/javascript">
-  $(function(){
-    $.ajax({
-      type:'get',   //Definimos o método HTTP usado
-      dataType: 'json', //Definimos o tipo de retorno
-      url: 'http://localhost/ApiSC/public/enderecos',//Definindo o arquivo onde serão buscados os dados
-      success: function(data){
-        console.log(data);
-        for(i=0; i<data.length; i++){       
-          $('#endereco').append('<option value="'+data[i].id+'">'+data[i].rua+'</option>');
+$(function(){
+
+  $('#endereco').autocomplete({
+    source: function(request, response){
+      $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: 'http://localhost/ApiSC/public/ruaendereco/'+ request.term +'',
+        data: {
+          name: request.term                    
+        },
+        success: function(data){
+          response($.map(data, function(item){					
+            return {
+              label: item.rua,
+              value: item.rua,
+              id: item.id,					
+            }
+          }));
         }
-      }
-    });
+      });
+    },
+    select: function(event, ui){
+    // 	event.preventDefault();
+      $('#idEndereco').val(ui.item.id);			
+    },
+    minLength: 0,
+    autoFocus: true
+  
+  });
 
   $('#btnCadastrar').click(function(){
     var Nempresa = $('#Nempresa').val();
     var telefone = $('#telefone').val();      
-    var endereco = $('#endereco').val();    
+    var idEndereco = $('#idEndereco').val();    
     var cnpj = $('#cnpj').val();  
     
     
-    if(Nempresa != null || Nempresa != ""){    
-      if(cnpj == ""){
-        cnpj = '-1';
-      }   
+    if(Nempresa.length != 0){    
       $.ajax({
         url: 'http://localhost/ApiSC/public/fornecedor',
         type: 'post',
@@ -90,7 +105,7 @@
           nome: Nempresa,
           telefone: telefone,
           cnpj: cnpj,         
-          ENDERECO_id: endereco
+          ENDERECO_id: idEndereco
         },
         success: function( data, textStatus, jQxhr ){
           alert('Cadastro de fornecedor realizado com sucesso!');
