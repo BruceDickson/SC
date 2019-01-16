@@ -81,22 +81,22 @@ $(function(){
                 
     if(rua.length != 0 && cidade.length != 0){       
         $.ajax({
-        url: 'http://localhost/ApiSC/public/endereco',
-        type: 'post',
-        data: {
-            rua: rua,
-            cep: cep,
-            numero: numero,     
-            bairro: bairro,
-            cidade: cidade,
-            uf: uf,
-        },
-        success: function( data, textStatus, jQxhr ){
-            alert('Cadastro de endereço realizado com sucesso!');
-        },
-        error: function( jqXhr, textStatus, errorThrown ){
-            console.log( errorThrown );
-        }
+            url: 'http://localhost/ApiSC/public/endereco',
+            type: 'post',
+            data: {
+                rua: rua,
+                cep: cep,
+                numero: numero,     
+                bairro: bairro,
+                cidade: cidade,
+                uf: uf,
+            },
+            success: function( data, textStatus, jQxhr ){
+                alert('Cadastro de endereço realizado com sucesso!');
+            },
+            error: function( jqXhr, textStatus, errorThrown ){
+                console.log( errorThrown );
+            }
         });
         $('#rua').val('');      
         $('#numero').val(''); 
