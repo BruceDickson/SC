@@ -26,10 +26,11 @@
 					<div class="form-group">										
 						<div class="col-md-4">		
 							<label class="control-label col-md-2">Fornecedor</label>							
-							<select  id="fornecedor"  class="form-control col-md-4">
-						    	<option value="-1"></option>
-						    <select>   
-						</div>
+							<input type="text" id="fornecedor" class="form-control col-md-2"/>
+                        </div>
+                        <div >
+                            <input id="idFornecedor" type="hidden" class="form-control col-md-2 " />
+                        </div>
 						<div class="col-md-2"></div>																
 						<div class="col-md-2">		
 							<label class="control-label col-md-1">Telefone</label>							
@@ -115,31 +116,50 @@ $(function(){
 
     });
 
-    $('#fornecedor').change(function(){
-    var id = $(this).val();
-
-    if(id == '-1'){
-        document.getElementById('telefone').value = "";     
-        document.getElementById('endereco').value = "";
-        document.getElementById('cidade').value = "";   
-    }else{
-        $.ajax({
-        type:'get',
-        dataType: 'json', 
-        url: 'http://localhost/ApiSC/public/fornecedor/'+id+'',
-        success: function(data){                  
-            document.getElementById('telefone').value = data[0].FORNECEDOR_telefone;     
-            document.getElementById('endereco').value = data[0].ENDERECO_rua + ", " + data[0].ENDERECO_numero ; 
-            document.getElementById('cidade').value = data[0].ENDERECO_cidade;          
-        }
-        });
-    }
-
-    });
+    $('#fornecedor').autocomplete({
+        source: function(request, response){
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                url: 'http://localhost/ApiSC/public/nomefornecedor/'+ request.term +'',
+                data: {
+                    name: request.term                    
+                },
+                success: function(data){
+                    response($.map(data, function(item){					
+                        return {
+                            label: item.nome,
+                            value: item.nome,
+                            id: item.id,
+                            telefone: item.telefone,                            				
+                        }
+                    }));
+                }
+            });
+        },
+        select: function(event, ui){
+        // 	event.preventDefault();
+            $('#idFornecedor').val(ui.item.id);
+            $('#telefone').val(ui.item.telefone);
+            $.ajax({
+                type:'get', 
+                dataType: 'json',
+                url: 'http://localhost/ApiSC/public/fornecedor/'+ui.item.id+'',
+                success: function(data){
+                    $('#endereco').val(data[0].ENDERECO_rua + ", " + data[0].ENDERECO_numero);
+                    $('#cidade').val(data[0].ENDERECO_cidade);
+                }
+            });
+        },
+        minLength: 0,
+        //search: '',
+        autoFocus: true
+		
+	});
 
     $('#btnConfirma').click(function(){
-        var fornecedor = $('#fornecedor').val(); 
-        var nFornecedor = $('#fornecedor option:selected').text();            
+        var idFornecedor = $('#idFornecedor').val(); 
+        var nFornecedor = $('#fornecedor').val();            
         var usuario = 1; // usuario cleiton
         var valor = '0'; 
         var cidade = $('#cidade').val();
@@ -162,7 +182,7 @@ $(function(){
             data: {
             valor: valor,
             date: dataBanco,
-            FORNECEDOR_id: fornecedor,
+            FORNECEDOR_id: idFornecedor,
             USUARIO_id: usuario      
             },
             success: function( data, textStatus, jQxhr ){                

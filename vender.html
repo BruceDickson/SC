@@ -27,7 +27,7 @@
 							<input type="text" readonly="true" id="empresa" class="form-control col-md-4"/>
 						</div>
 						<div class="col-md-2"></div>																
-						<div class="col-md-2">		
+						<div class="col-md-3">		
 							<label class="control-label col-md-1">Cidade</label>							
 							<input type="text" readonly="true" id="cidade" class="form-control col-md-4"/>
 						</div>		
@@ -127,12 +127,12 @@
 	var idItemVenda, valorTotal=0, idEmpresa, idUsuario;
 
 	$( "#dataVenda" ).datepicker({
-			dateFormat: 'dd/mm/yy',
-			dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
-			dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
-			dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
-			monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
-			monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+		dateFormat: 'dd/mm/yy',
+		dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
+		dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+		dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+		monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+		monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 	});
 
 	function getFormattedDate(date) {
@@ -147,6 +147,7 @@
 	  return day + '/' + month + '/' + year;
 	}
 
+	
 	// function removeAcento (text){       
   //   text = text.toLowerCase();                                                         
   //   text = text.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');

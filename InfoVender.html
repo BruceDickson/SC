@@ -27,10 +27,14 @@
 					<div class="form-group">										
 						<div class="col-md-4">		
 							<label class="control-label col-md-2">Empresa</label>							
-							<select  id="empresa"  class="form-control col-md-4">
+							<!-- <select  id="empresa"  class="form-control col-md-4">
 						    	<option value="-1"></option>
-						    <select>   
-						</div>
+						    <select>    -->
+                            <input type="text" id="empresa" class="form-control col-md-2"/>
+                        </div>
+                        <div >
+                            <input id="idEmpresa" type="hidden" class="form-control col-md-2 " />
+                        </div>
 						<div class="col-md-2"></div>																
 						<div class="col-md-2">		
 							<label class="control-label col-md-1">Telefone</label>							
@@ -116,37 +120,49 @@ $(function(){
 
     });
 
-   /* $('#botaotoggle').click(function(){
-			console.log('entrou');
-			$("#forminfo").collapse('toggle');
-	});*/
-
-    $('#empresa').change(function(){
-    var id = $(this).val();
-
-
-    if(id == '-1'){
-        document.getElementById('telefone').value = "";     
-        document.getElementById('endereco').value = "";
-        document.getElementById('cidade').value = "";   
-    }else{
-        $.ajax({
-        type:'get',   //Definimos o método HTTP usado
-        dataType: 'json', //Definimos o tipo de retorno
-        url: 'http://localhost/ApiSC/public/empresa/'+id+'',//Definindo o arquivo onde serão buscados os dados
-        success: function(data){                  
-            document.getElementById('telefone').value = data[0].EMPRESA_telefone;     
-            document.getElementById('endereco').value = data[0].ENDERECO_rua + ", " + data[0].ENDERECO_numero ; 
-            document.getElementById('cidade').value = data[0].ENDERECO_cidade;          
-        }
-        });
-    }
-
-    });
+    $('#empresa').autocomplete({
+        source: function(request, response){
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                url: 'http://localhost/ApiSC/public/nomeempresa/'+ request.term +'',
+                data: {
+                    name: request.term                    
+                },
+                success: function(data){
+                    response($.map(data, function(item){					
+                        return {
+                            label: item.nome,
+                            value: item.nome,
+                            id: item.id,
+                            telefone: item.telefone,                            				
+                        }
+                    }));
+                }
+            });
+        },
+        select: function(event, ui){
+        // 	event.preventDefault();
+            $('#idEmpresa').val(ui.item.id);
+            $('#telefone').val(ui.item.telefone);
+            $.ajax({
+                type:'get', 
+                dataType: 'json',
+                url: 'http://localhost/ApiSC/public/empresa/'+ui.item.id+'',
+                success: function(data){
+                    $('#endereco').val(data[0].ENDERECO_rua + ", " + data[0].ENDERECO_numero);
+                    $('#cidade').val(data[0].ENDERECO_cidade);
+                }
+            });
+        },
+        minLength: 0,
+        autoFocus: true
+		
+	});
 
     $('#btnConfirma').click(function(){
-        var empresa = $('#empresa').val(); 
-        var Nempresa = $('#empresa option:selected').text();            
+        var Nempresa = $('#empresa').val();         
+        var idEmpresa = $('#idEmpresa').val();
         var usuario = 1; // usuario cleiton
         var valor = '0'; 
         var cidade = $('#cidade').val();
@@ -162,14 +178,14 @@ $(function(){
         //$dataP = explode('-', $data);
         //$dataParaExibir = $dataP[2].'/'.$dataP[1].'/'.$dataP[0];
 
-    if(empresa != -1){        
+    if(Nempresa.length != 0){        
         $.ajax({
             url: 'http://localhost/ApiSC/public/venda',
             type: 'post',
             data: {
             valor: valor,
             date: dataBanco,
-            EMPRESA_id: empresa,
+            EMPRESA_id: idEmpresa,
             USUARIO_id: usuario      
             },
             success: function( data, textStatus, jQxhr ){                
@@ -180,7 +196,7 @@ $(function(){
                 }); 
             },
             error: function( jqXhr, textStatus, errorThrown ){
-            console.log( errorThrown );
+                console.log( errorThrown );
             }
         });
          
