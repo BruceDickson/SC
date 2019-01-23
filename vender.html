@@ -164,18 +164,6 @@
 	  var date = new Date();
 	  $('#dataVenda').val(getFormattedDate(date));
 
-	  // $.ajax({
-	  //   type:'get',   
-	  //   dataType: 'json', 
-	  //   url: 'http://localhost/ApiSC/public/empresas',
-	  //   success: function(data){
-	  //     for(i=0; i<data.length; i++){       
-	  //       $('#empresa').append('<option value="'+data[i].EMPRESA_id+'">'+data[i].EMPRESA_nome+'</option>');
-	  //     }
-		// 		idEmpresa = data[i].EMPRESA_id;
-	  //   }
-	  // });
-
 		$.ajax({
 			type: 'get',
 			dataType: 'json',
@@ -235,17 +223,16 @@
 			//	"aaSorting": [],
 			 //"bSortable": false, "aTargets": [ 0 ] ,
         buttons: [
-				{
-					extend: 'print',						
-		text: 'Imprimir',
-		key: {
-			key: 'p',
-			altkey: true
-					},
-					
-					exportOptions: {  // ESCOLHER COLUNAS PARA SEREM IMPRIMIDAS
-			columns: [ 0, 1, 2, 3, 4, 5 ]
-					}
+			{
+				extend: 'print',						
+				text: 'Imprimir',
+				key: {
+				key: 'p',
+				altkey: true
+				},
+				exportOptions: {  // ESCOLHER COLUNAS PARA SEREM IMPRIMIDAS
+				columns: [ 0, 1, 2, 3, 4, 5 ]
+				}
 			},
         ],
         "language": {

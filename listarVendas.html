@@ -50,7 +50,6 @@
 </div>
 
 
-
 <script>
 $(document).ready(function(){
   $('#tabela_vendas').DataTable({ 
@@ -68,12 +67,15 @@ $(document).ready(function(){
           var dataP = e[0].split("-")
           //dataP = dataP[2].split(" ");			
           var dataResult = dataP[2]+'/'+dataP[1]+'/'+dataP[0];	
+          var x = parseFloat(json[i].VENDA_valor);
+					var svalor = x.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+
           return_data.push({
             'VENDA_id': json[i].VENDA_id,              
             'EMPRESA_NOME' : json[i].EMPRESA_NOME,
             'VENDA_date' : dataResult,
             'ENDERECO_cidade' : json[i].ENDERECO_cidade,
-            'VENDA_valor' : json[i].VENDA_valor,
+            'VENDA_valor' : svalor,
             'btnEdt' : '<button type="button" name="edit" id="'+ json[i].VENDA_id +'" class="btn btn-success btn-xs">editar</button>'
           })
         }
@@ -91,13 +93,13 @@ $(document).ready(function(){
 
     "columnDefs": [ 
       {
-      "targets": 5,				
-      "createdCell": function (td, cellData, rowData, row, col) {
-          $(td).css('padding', '5px 0 0 20px')
-      }
-      },
+        "targets": 5,				
+        "createdCell": function (td, cellData, rowData, row, col) {
+            $(td).css('padding', '5px 0 0 20px')
+        }
+        },
       { "width": "6%", "targets": 5 }
-        ],
+      ],
   
     "language": {
         "lengthMenu": "Mostrando _MENU_ registros por página",

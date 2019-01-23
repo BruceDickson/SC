@@ -1,7 +1,7 @@
 <div class="">
 	<div class="x_panel">
     	<div class="x_title">
-			<h2>Informações do Pedido</h2>    		
+			<h2>Informações da Compra</h2>    		
 		<div class="clearfix"></div>
 		</div>
 	
@@ -15,16 +15,16 @@
 						</div>
 						<div class="col-md-5"></div>													
 						<div class="col-md-2">		
-							<label class="control-label col-md-8">Data Venda</label>							
-							<input type="text" id="dataVenda" class="form-control col-md-2"/>
+							<label class="control-label col-md-8">Data Compra</label>							
+							<input type="text" id="dataCompra" class="form-control col-md-2"/>
 						</div>
 					</div>
 				</div>	
 				<div class="row">
 					<div class="form-group">										
 						<div class="col-md-4">		
-							<label class="control-label col-md-2">Empresa</label>							
-							<input type="text" readonly="true" id="empresa" class="form-control col-md-4"/>
+							<label class="control-label col-md-2">Fornecedor</label>							
+							<input type="text" readonly="true" id="fornecedor" class="form-control col-md-4"/>
 						</div>
 						<div class="col-md-2"></div>																
 						<div class="col-md-3">		
@@ -41,7 +41,7 @@
 	</div>	  			
 	<div class="x_panel">
 		<div class="x_title">
-			<h2>Adicionar Produto à Venda</h2>    
+			<h2>Adicionar Produto à Compra</h2>    
 			<div class="clearfix"></div>
 		</div>
 			<div class="x_content">
@@ -85,7 +85,7 @@
 	</div>
 	<div class="x_panel">
 		<div class="x_title">
-			<h2>Pedido</h2>		       
+			<h2>Compra</h2>		       
 			<div class="clearfix"></div>
 		</div>
 		<div class="x_content">
@@ -96,7 +96,7 @@
 					<th >Produto&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-					<th>Preço Venda&nbsp;&nbsp;&nbsp;</th>
+					<th>Preço Compra&nbsp;&nbsp;&nbsp;</th>
 					<th>Qtd</th>
 					<th>Uni.</th>
 					<th>Valor</th>
@@ -110,14 +110,14 @@
 				<div>
 					<div class="x_content">
 					</div class="x_title">
-					<label id="totalVenda" style="font-size: 18px; color: rgb(250, 65, 65);" class="control-label col-md-4">Total: </label>		       
+					<label id="totalCompra" style="font-size: 18px; color: rgb(250, 65, 65);" class="control-label col-md-4">Total: </label>		       
 					<div class="clearfix"></div>
 					</div>
 				</div>
 		</div>
 		<div class="col-md-5"></div>
 		<div >
-			<button type="button" id="btnVender" class="btn btn-danger btn-lg">Finalizar Venda</button>
+			<button type="button" id="btnComprar" class="btn btn-danger btn-lg">Finalizar Compra</button>
 			
 		</div>
 	</div>
@@ -126,10 +126,10 @@
 
 <script>
 $(function(){
-    var idItemVenda, valorTotal=0, idVenda, idUsuario;
-	idVenda = $('#listaVendas').val();
+    var idItemCompra, valorTotal=0, idCompra, idUsuario;
+	idCompra = $('#listaCompras').val();
 
-	$( "#dataVenda" ).datepicker({
+	$( "#dataCompra" ).datepicker({
 		dateFormat: 'dd/mm/yy',
 		dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'],
 		dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
@@ -182,104 +182,35 @@ $(function(){
     
     });
 
-	// var t = $('#tabela_pedido').DataTable({
-	// 	"ajax": {
-    //  	"method": "GET",
-    //  	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
-	// 	//dataType: 'json',
-	// 	//mDataProp: "",
-	// 	//"dataType": "application/json; charset=utf-8",
-    //    "dataSrc": "",
-    // 	},
-	// 	"aoColumns": [
-	// 		{ "mData" : "PRODUTO_id"},
-	// 		{ "mData" : "PRODUTO_id"},
-	// 		{ "mData" : "valor"},
-	// 		{ "mData" : "qtd"},
-	// 		{ "mData" : "UNIDADE_id"},
-	// 		{ "mData" : "btnDelete"},
-    // 	],
-		
-		
-	// 	// "ajax": {
-	// 	// 	"method": "GET",
-	// 	// 	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
-	// 	// 	//"dataType": "application/json; charset=utf-8",
-	// 	// 	"dataSrc": "",
-	// 	// 	"sAjaxDataProp": "",
-	// 	// },
-	// 	// "columns": [
-	// 	// 	{"data": "id"},
-	// 	// 	{"data": "id"},
-	// 	// 	{"data": "valor"},
-	// 	// 	{"data": "qtd"},
-	// 	// 	{"data": "UNIDADE_id"},
-	// 	// ],
-
-    //     "language": {
-    //         "lengthMenu": "Mostrando _MENU_ registros por página",
-    //         "zeroRecords": "Nada encontrado",
-    //         "info": "Mostrando página _PAGE_ de _PAGES_",
-    //         "infoEmpty": " ",
-    //         "infoFiltered": "(filtrado de _MAX_ total records)",
-    //         "search": "Pesquisar:",
-    //         "paginate": {
-    //           "first":      "Primeiro",
-    //           "last":       "Ultimo",
-    //           "next":       "Próximo",
-    //           "previous":   "Anterior"
-    //         }
-    //     },
-	// 	"columnDefs": [ 
-	// 		// {
-	// 		// "targets": [ 6 ],
-    //         // "visible": false,
-	// 		// },
-	// 		// {
-	// 		// "targets": 5,				
-	// 		// "createdCell": function (td, cellData, rowData, row, col) {
-	// 		// 		$(td).css('padding', '5px 0 0 20px')
-	// 		// }
-	// 		// },
-	// 		{
-	// 		"defaultContent": "-",
-	// 		"targets": "_all"
-	// 		}
-	// 		],
-	// 	order: [[0, "desc"]]
-			
-				
-	// 	});
-
     var t = $('#tabela_pedido').DataTable({
 		"ajax": {
      	"method": "GET",
-     	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
+     	"url": "http://localhost/ApiSC/public/itenscompra/"+idCompra,
 		"dataSrc": function (json) {
 				var return_data = new Array();
-				var vparcial = 0, sprecoItem = 0, pVenda = 0;
+				var vparcial = 0, sprecoItem = 0, pCompra = 0;
 				for(var i=0;i< json.length; i++){
-					vparcial += parseFloat(json[i].ITEMVENDA_valor);	
-					var x = parseFloat(json[i].ITEMVENDA_valor);
-					var y = parseFloat(json[i].ITEMVENDA_pVenda);
+					vparcial += parseFloat(json[i].ITEMCOMPRA_valor);	
+					var x = parseFloat(json[i].ITEMCOMPRA_valor);
+					var y = parseFloat(json[i].ITEMCOMPRA_pCompra);
 					sprecoItem = x.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-					pVenda = y.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});	
+					pCompra = y.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});	
 
 					t.row.add( [
-						'<td id="data1">'+ json[i].ITEMVENDA_PRODUTO_id +'<td/>',
+						'<td id="data1">'+ json[i].ITEMCOMPRA_PRODUTO_id +'<td/>',
 						'<td id="data2">'+ json[i].PRODUTO_nome +'<td/>',
-						'<td id="data3">'+ pVenda +'<td/>',
-						'<td id="data4">'+ json[i].ITEMVENDA_qtd +'<td/>',
+						'<td id="data3">'+ pCompra +'<td/>',
+						'<td id="data4">'+ json[i].ITEMCOMPRA_qtd +'<td/>',
 						'<td id="data5">'+ json[i].UNIDADE_unidade +'<td/>',
 						'<td id="data5">'+ sprecoItem +'<td/>',
-						'<td>'+ json[i].ITEMVENDA_id  +'<td/>',
-						'<button type="button" name="delete" id="'+ json[i].ITEMVENDA_id +'" class="btn btn-danger btn-xs">delete</button>',
+						'<td>'+ json[i].ITEMCOMPRA_id  +'<td/>',
+						'<button type="button" name="delete" id="'+ json[i].ITEMCOMPRA_id +'" class="btn btn-danger btn-xs">delete</button>',
 					] ).draw();			
 				}
 				var pValor;
 				valorTotal += vparcial; 
 				pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-				$('#totalVenda').text('Total: '+ pValor);
+				$('#totalCompra').text('Total: '+ pValor);
 			
       	}
     	},
@@ -370,20 +301,20 @@ $(function(){
 
 		if(nomeProduto && idProduto && preco && qtd){       
 			$.ajax({
-				url: 'http://localhost/ApiSC/public/itemvenda',
+				url: 'http://localhost/ApiSC/public/itemcompra',
 				type: 'post',
 				data: {
 					qtd: qtd,
 					valor: precoItem,
-					pVenda: p,
-					VENDA_id: nPedido,
+					pCompra: p,
+					COMPRA_id: nPedido,
 					PRODUTO_id: idProduto,
 					UNIDADE_id: unidade
 				},
 				success: function( data, textStatus, jQxhr ){
 					var pValor;
 					var k = JSON.parse(data);
-					idItemVenda = k[0].id;
+					idItemCompra = k[0].id;
 					var valorParcial = parseFloat(preco) * parseInt(qtd);
 
 					unidade == 1 ? valorParcial *= parseInt(qtdCx) : valorParcial *= parseInt(qtdUnidade); // CX ou outras unidades
@@ -393,20 +324,20 @@ $(function(){
 					valorTotal = parseFloat(valorTotal);
 					
 					pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-					$('#totalVenda').text('Total: '+ pValor);
+					$('#totalCompra').text('Total: '+ pValor);
 
 					var sprecoItem = precoItem.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-					var pVenda = p.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					var pCompra = p.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					
 					t.row.add( [
 						'<td id="data1">'+ idProduto +'<td/>',
 						'<td id="data2">'+ nomeProduto +'<td/>',
-						'<td id="data3">'+ pVenda +'<td/>',
+						'<td id="data3">'+ pCompra +'<td/>',
 						'<td id="data4">'+ qtd +'<td/>',
 						'<td id="data5">'+ unidadeTxt +'<td/>',
 						'<td>'+ sprecoItem +'<td/>',						
-						'<td>'+ idItemVenda +'<td/>',
-						'<button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button>'
+						'<td>'+ idItemCompra +'<td/>',
+						'<button type="button" name="delete" id="'+ idItemCompra +'" class="btn btn-danger btn-xs">delete</button>'
 					] ).draw();			
 				},
 				error: function( jqXhr, textStatus, errorThrown ){
@@ -437,13 +368,13 @@ $(function(){
 			$.ajax({
 				type: 'delete',
 				dataType: 'json',
-				url: 'http://localhost/ApiSC/public/itemvenda/'+ id +'',
+				url: 'http://localhost/ApiSC/public/itemcompra/'+ id +'',
 				success: function(data){
 					var valorItem = parseFloat(data[0].valor);
 					var pValor;
 					valorTotal -= valorItem;
 					pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
-					$('#totalVenda').text('Total: '+ pValor);
+					$('#totalCompra').text('Total: '+ pValor);
 				}
 			});
 			t.row( row ).remove().draw( false ); // deletar linha da datatable
@@ -451,16 +382,16 @@ $(function(){
 	});
 
 		
-	$('#btnVender').on('click', function(){
+	$('#btnComprar').on('click', function(){
 		if(!t.data().count()){
-			alert("Nenhum produto inserido na venda");
+			alert("Nenhum produto inserido na compra");
 		}else{
-			var idVenda = $('#Npedido').val();
-			var data = $('#dataVenda').val();
+			var idCompra = $('#Npedido').val();
+			var data = $('#dataCompra').val();
 			var dataP = data.split("/");			
 			var dataBanco = dataP[2]+'-'+dataP[1]+'-'+dataP[0];
 			$.ajax({
-					url: 'http://localhost/ApiSC/public/venda/'+ idVenda,
+					url: 'http://localhost/ApiSC/public/compra/'+ idCompra,
 					type: 'post',
 					dataType: 'json',
 					data: {
@@ -468,7 +399,7 @@ $(function(){
 						date: dataBanco,
 					},
 					success: function(data){
-						alert('Venda Finalizada');
+						alert('Compra Finalizada');
 						window.location.replace("index.html"); // CARREGA A PAGINA INICIAL
 					},
 			});

@@ -1,26 +1,28 @@
-<div class="">
-    <div class="x_panel">
-      <div class="x_title">
-        <h2>Lista de Compras </h2>                    
-        <div class="clearfix"></div>
-      </div>
-      <div class="x_content">
-        <table id="tabela_compras" class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>N° </th>
-              <th>Fornecedor</th>
-              <th>Data</th>    
-              <th>Cidade</th> 
-              <th>Valor</th>
-            </tr>
-          </thead>
-          <tbody>    
-          </tbody>
-        </table>
-
-      </div>
+<div id="listaCompras">
+  <div class="x_panel">
+    <div class="x_title">
+      <h2>Lista de Compras </h2>                    
+      <div class="clearfix"></div>
     </div>
+    <div class="x_content">
+      <table id="tabela_compras" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th>N° </th>
+            <th>Fornecedor</th>
+            <th>Data</th>    
+            <th>Cidade</th> 
+            <th>Valor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>    
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
 
 
 <script>
@@ -40,12 +42,15 @@
             var dataP = e[0].split("-")
             //dataP = dataP[2].split(" ");			
             var dataResult = dataP[2]+'/'+dataP[1]+'/'+dataP[0];	
+            var x = parseFloat(json[i].COMPRA_valor);
+					  var svalor = x.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
             return_data.push({
               'COMPRA_id': json[i].COMPRA_id,              
               'FORNECEDOR_nome' : json[i].FORNECEDOR_nome,
               'COMPRA_date' : dataResult,
               'ENDERECO_cidade' : json[i].ENDERECO_cidade,
-              'COMPRA_valor' : json[i].COMPRA_valor
+              'COMPRA_valor' : svalor,
+              'btnEdt' : '<button type="button" name="edit" id="'+ json[i].COMPRA_id +'" class="btn btn-success btn-xs">editar</button>'
             })
           }
           return return_data;
@@ -56,7 +61,18 @@
           { "data" : "FORNECEDOR_nome"},
           { "data" : "COMPRA_date"},
           { "data" : "ENDERECO_cidade"},
-          { "data" : "COMPRA_valor"}
+          { "data" : "COMPRA_valor"},
+          { "data" : "btnEdt"}
+      ],
+
+      "columnDefs": [ 
+        {
+        "targets": 5,				
+        "createdCell": function (td, cellData, rowData, row, col) {
+            $(td).css('padding', '5px 0 0 20px')
+        }
+        },
+        { "width": "6%", "targets": 5 }
       ],
     
       "language": {
@@ -75,5 +91,22 @@
       },
       order: [[0, "desc"]]
     });
+
+    $('#tabela_compras').on( 'click', "tr button[name='edit']", function (){
+    var id = $(this).attr("id");
+    var tr = $(this).closest("tr");
+		var nFornecedor = tr[0].cells[1].textContent;
+    var cidade = tr[0].cells[3].textContent;
+    var dataCompra = tr[0].cells[2].textContent;
+    $('#listaCompras').val(id);
+    
+    $('#listaCompras').load('pages/editarCompra.html', function(){
+      $('#Npedido').val(id);
+      $('#fornecedor').val(nFornecedor);
+      $('#cidade').val(cidade);  
+      $('#dataCompra').val(dataCompra);
+    });
   });
+
+});
 </script>
