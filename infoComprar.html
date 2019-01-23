@@ -128,7 +128,7 @@ $(function(){
                 success: function(data){
                     response($.map(data, function(item){					
                         return {
-                            label: item.nome,
+                            //label: item.nome,
                             value: item.nome,
                             id: item.id,
                             telefone: item.telefone,                            				
@@ -152,7 +152,6 @@ $(function(){
             });
         },
         minLength: 0,
-        //search: '',
         autoFocus: true
 		
 	});

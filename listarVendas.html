@@ -1,5 +1,5 @@
 
-<div class="">
+<div id="listaVendas">
     <div class="x_panel">
       <div class="x_title">
         <h2>Lista de Vendas </h2>                    
@@ -18,6 +18,7 @@
               <th>Data</th>    
               <th>Cidade</th> 
               <th>Valor</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -46,59 +47,93 @@
 
       </div>
     </div>
+</div>
+
 
 
 <script>
-  $(document).ready(function(){
-    $('#tabela_vendas').DataTable({ 
-      "ajax": {
-        "method": "GET",
-        "url": "http://localhost/ApiSC/public/vendas",
-         "data": function(data){
-           //console.log(data);
-         },
-        "dataSrc": function (json) {
-          var return_data = new Array();
-          for(var i=0;i< json.length; i++){
-            var e = json[i].VENDA_date;
-            var e = e.split(" ");
-            var dataP = e[0].split("-")
-            //dataP = dataP[2].split(" ");			
-            var dataResult = dataP[2]+'/'+dataP[1]+'/'+dataP[0];	
-            return_data.push({
-              'VENDA_id': json[i].VENDA_id,              
-              'EMPRESA_NOME' : json[i].EMPRESA_NOME,
-              'VENDA_date' : dataResult,
-              'ENDERECO_cidade' : json[i].ENDERECO_cidade,
-              'VENDA_valor' : json[i].VENDA_valor
-            })
-          }
-          return return_data;
+$(document).ready(function(){
+  $('#tabela_vendas').DataTable({ 
+    "ajax": {
+      "method": "GET",
+      "url": "http://localhost/ApiSC/public/vendas",
+        "data": function(data){
+          //console.log(data);
+        },
+      "dataSrc": function (json) {
+        var return_data = new Array();
+        for(var i=0;i< json.length; i++){
+          var e = json[i].VENDA_date;
+          var e = e.split(" ");
+          var dataP = e[0].split("-")
+          //dataP = dataP[2].split(" ");			
+          var dataResult = dataP[2]+'/'+dataP[1]+'/'+dataP[0];	
+          return_data.push({
+            'VENDA_id': json[i].VENDA_id,              
+            'EMPRESA_NOME' : json[i].EMPRESA_NOME,
+            'VENDA_date' : dataResult,
+            'ENDERECO_cidade' : json[i].ENDERECO_cidade,
+            'VENDA_valor' : json[i].VENDA_valor,
+            'btnEdt' : '<button type="button" name="edit" id="'+ json[i].VENDA_id +'" class="btn btn-success btn-xs">editar</button>'
+          })
         }
+        return return_data;
+      }
+    },
+    "columns": [
+        { "data" : "VENDA_id"},
+        { "data" : "EMPRESA_NOME"},
+        { "data" : "VENDA_date"},
+        { "data" : "ENDERECO_cidade"},
+        { "data" : "VENDA_valor"},
+        { "data" : "btnEdt"}
+    ],
+
+    "columnDefs": [ 
+      {
+      "targets": 5,				
+      "createdCell": function (td, cellData, rowData, row, col) {
+          $(td).css('padding', '5px 0 0 20px')
+      }
       },
-      "columns": [
-          { "data" : "VENDA_id"},
-          { "data" : "EMPRESA_NOME"},
-          { "data" : "VENDA_date"},
-          { "data" : "ENDERECO_cidade"},
-          { "data" : "VENDA_valor"}
-      ],
-    
-      "language": {
-          "lengthMenu": "Mostrando _MENU_ registros por página",
-          "zeroRecords": "Nada encontrado",
-          "info": "Mostrando página _PAGE_ de _PAGES_",
-          "infoEmpty": " ",
-          "infoFiltered": "(filtrado de _MAX_ total records)",
-          "search": "Pesquisar:",
-          "paginate": {
-            "first":      "Primeiro",
-            "last":       "Ultimo",
-            "next":       "Próximo",
-            "previous":   "Anterior"
-          }
-      },
-      order: [[0, "desc"]]
-    });
+      { "width": "6%", "targets": 5 }
+        ],
+  
+    "language": {
+        "lengthMenu": "Mostrando _MENU_ registros por página",
+        "zeroRecords": "Nada encontrado",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": " ",
+        "infoFiltered": "(filtrado de _MAX_ total records)",
+        "search": "Pesquisar:",
+        "paginate": {
+          "first":      "Primeiro",
+          "last":       "Ultimo",
+          "next":       "Próximo",
+          "previous":   "Anterior"
+        }
+    },
+    order: [[0, "desc"]]
   });
+
+  $('#tabela_vendas').on( 'click', "tr button[name='edit']", function (){
+    var id = $(this).attr("id");
+    var tr = $(this).closest("tr");
+		var Nempresa = tr[0].cells[1].textContent;
+    var cidade = tr[0].cells[3].textContent;
+    var dataVenda = tr[0].cells[2].textContent;
+    $('#listaVendas').val(id);
+    
+    $('#listaVendas').load('pages/editarVenda.html', function(){
+      $('#Npedido').val(id);
+      $('#empresa').val(Nempresa);
+      $('#cidade').val(cidade);  
+      $('#dataVenda').val(dataVenda);
+    });
+
+   //$('#main_content').load('pages/editarVenda.html', {limit : 10 });
+
+    
+  });
+});
 </script>

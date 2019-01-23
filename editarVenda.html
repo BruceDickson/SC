@@ -118,14 +118,16 @@
 		<div class="col-md-5"></div>
 		<div >
 			<button type="button" id="btnVender" class="btn btn-danger btn-lg">Finalizar Venda</button>
+			
 		</div>
 	</div>
 	
 </div> 
 
 <script>
-	//$('#NProduto').editableSelect();
-	var idItemVenda, valorTotal=0, idEmpresa, idUsuario;
+$(function(){
+    var idItemVenda, valorTotal=0, idEmpresa, idVenda, idUsuario;
+	idVenda = $('#listaVendas').val();
 
 	$( "#dataVenda" ).datepicker({
 		dateFormat: 'dd/mm/yy',
@@ -136,118 +138,182 @@
 		monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 	});
 
-	function getFormattedDate(date) {
-	  var year = date.getFullYear();
+    $.ajax({
+        type: 'get',
+        dataType: 'json',
+        url: 'http://localhost/ApiSC/public/unidades',
+        success: function(data){				
+            for(i=0; i<data.length; i++){  				
+            $('#unidades').append('<option value="'+data[i].id+'" qtdUnidade="'+data[i].qtd+'">'+data[i].unidade+'</option>');
+            }
+        }
+	});
 
-	  var month = (1 + date.getMonth()).toString();
-	  month = month.length > 1 ? month : '0' + month;
 
-	  var day = date.getDate().toString();
-	  day = day.length > 1 ? day : '0' + day;
-	  
-	  return day + '/' + month + '/' + year;
-	}
+    $('#NProduto').autocomplete({
+        source: function(request, response){
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                url: 'http://localhost/ApiSC/public/nomeproduto/'+ request.term +'',
+                data: {
+                    name: request.term                    
+                },
+                success: function(data){
+                    response($.map(data, function(item){					
+                        return {
+                            label: item.nome,
+                            value: item.nome,
+                            id: item.id,
+                            cx: item.cx							
+                        }
+                    }));
+                }
+            });
+        },
+        select: function(event, ui){
+        // 	event.preventDefault();
+            $('#idProduto').val(ui.item.id);
+            $('#nomeProduto').text(ui.item.label);
+            $('#cx').val(ui.item.cx);				
+        },
+        minLength: 0,
+        autoFocus: true
+    
+    });
 
-	
-	// function removeAcento (text){       
-  //   text = text.toLowerCase();                                                         
-  //   text = text.replace(new RegExp('[ÁÀÂÃ]','gi'), 'a');
-  //   text = text.replace(new RegExp('[ÉÈÊ]','gi'), 'e');
-  //   text = text.replace(new RegExp('[ÍÌÎ]','gi'), 'i');
-  //   text = text.replace(new RegExp('[ÓÒÔÕ]','gi'), 'o');
-  //   text = text.replace(new RegExp('[ÚÙÛ]','gi'), 'u');
-  //   text = text.replace(new RegExp('[Ç]','gi'), 'c');
-  //   return text;                 
-	// }
-
-	$(function(){
-	  var date = new Date();
-	  $('#dataVenda').val(getFormattedDate(date));
-
-	  // $.ajax({
-	  //   type:'get',   
-	  //   dataType: 'json', 
-	  //   url: 'http://localhost/ApiSC/public/empresas',
-	  //   success: function(data){
-	  //     for(i=0; i<data.length; i++){       
-	  //       $('#empresa').append('<option value="'+data[i].EMPRESA_id+'">'+data[i].EMPRESA_nome+'</option>');
-	  //     }
-		// 		idEmpresa = data[i].EMPRESA_id;
-	  //   }
-	  // });
-
-		$.ajax({
-			type: 'get',
-			dataType: 'json',
-			url: 'http://localhost/ApiSC/public/lastvenda',
-			success: function(data){
-				document.getElementById('Npedido').value = (data[0].id - 1);
-			}
-		});
-
-		$.ajax({
-			type: 'get',
-			dataType: 'json',
-			url: 'http://localhost/ApiSC/public/unidades',
-			success: function(data){				
-				for(i=0; i<data.length; i++){  				
-	        	$('#unidades').append('<option value="'+data[i].id+'" qtdUnidade="'+data[i].qtd+'">'+data[i].unidade+'</option>');
-	      }
-			}
-		});
-
-		$('#NProduto').autocomplete({
-			source: function(request, response){
-				$.ajax({
-					type: 'get',
-					dataType: 'json',
-					url: 'http://localhost/ApiSC/public/nomeproduto/'+ request.term +'',
-					data: {
-						name: request.term                    
-					},
-					success: function(data){
-					  response($.map(data, function(item){					
-							return {
-								label: item.nome,
-								value: item.nome,
-								id: item.id,
-								cx: item.cx							
-							}
-						}));
-					}
-				});
-			},
-			select: function(event, ui){
-			// 	event.preventDefault();
-				$('#idProduto').val(ui.item.id);
-				$('#nomeProduto').text(ui.item.label);
-				$('#cx').val(ui.item.cx);				
-			},
-			minLength: 0,
-			autoFocus: true
+	// var t = $('#tabela_pedido').DataTable({
+	// 	"ajax": {
+    //  	"method": "GET",
+    //  	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
+	// 	//dataType: 'json',
+	// 	//mDataProp: "",
+	// 	//"dataType": "application/json; charset=utf-8",
+    //    "dataSrc": "",
+    // 	},
+	// 	"aoColumns": [
+	// 		{ "mData" : "PRODUTO_id"},
+	// 		{ "mData" : "PRODUTO_id"},
+	// 		{ "mData" : "valor"},
+	// 		{ "mData" : "qtd"},
+	// 		{ "mData" : "UNIDADE_id"},
+	// 		{ "mData" : "btnDelete"},
+    // 	],
 		
-		});
+		
+	// 	// "ajax": {
+	// 	// 	"method": "GET",
+	// 	// 	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
+	// 	// 	//"dataType": "application/json; charset=utf-8",
+	// 	// 	"dataSrc": "",
+	// 	// 	"sAjaxDataProp": "",
+	// 	// },
+	// 	// "columns": [
+	// 	// 	{"data": "id"},
+	// 	// 	{"data": "id"},
+	// 	// 	{"data": "valor"},
+	// 	// 	{"data": "qtd"},
+	// 	// 	{"data": "UNIDADE_id"},
+	// 	// ],
 
-		var t = $('#tabela_pedido').DataTable({
-			  // dom: 'Bfrtip',
-				//ordering: false,
-			//	"bSort": false,
-			//	"aaSorting": [],
-			 //"bSortable": false, "aTargets": [ 0 ] ,
+    //     "language": {
+    //         "lengthMenu": "Mostrando _MENU_ registros por página",
+    //         "zeroRecords": "Nada encontrado",
+    //         "info": "Mostrando página _PAGE_ de _PAGES_",
+    //         "infoEmpty": " ",
+    //         "infoFiltered": "(filtrado de _MAX_ total records)",
+    //         "search": "Pesquisar:",
+    //         "paginate": {
+    //           "first":      "Primeiro",
+    //           "last":       "Ultimo",
+    //           "next":       "Próximo",
+    //           "previous":   "Anterior"
+    //         }
+    //     },
+	// 	"columnDefs": [ 
+	// 		// {
+	// 		// "targets": [ 6 ],
+    //         // "visible": false,
+	// 		// },
+	// 		// {
+	// 		// "targets": 5,				
+	// 		// "createdCell": function (td, cellData, rowData, row, col) {
+	// 		// 		$(td).css('padding', '5px 0 0 20px')
+	// 		// }
+	// 		// },
+	// 		{
+	// 		"defaultContent": "-",
+	// 		"targets": "_all"
+	// 		}
+	// 		],
+	// 	order: [[0, "desc"]]
+			
+				
+	// 	});
+
+    var t = $('#tabela_pedido').DataTable({
+		"ajax": {
+     	"method": "GET",
+     	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
+		"dataSrc": function (json) {
+				var return_data = new Array();
+				var vparcial = 0, sprecoItem = 0, pVenda = 0;
+				for(var i=0;i< json.length; i++){
+					vparcial += parseFloat(json[i].ITEMVENDA_valor);	
+					var x = parseFloat(json[i].ITEMVENDA_valor);
+					var y = parseFloat(json[i].ITEMVENDA_pVenda);
+					sprecoItem = x.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+					pVenda = y.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});	
+
+					t.row.add( [
+						'<td id="data1">'+ json[i].ITEMVENDA_PRODUTO_id +'<td/>',
+						'<td id="data2">'+ json[i].PRODUTO_nome +'<td/>',
+						'<td id="data3">'+ pVenda +'<td/>',
+						'<td id="data4">'+ json[i].ITEMVENDA_qtd +'<td/>',
+						'<td id="data5">'+ json[i].UNIDADE_unidade +'<td/>',
+						'<td id="data5">'+ sprecoItem +'<td/>',
+						'<td>'+ json[i].ITEMVENDA_id  +'<td/>',
+						'<button type="button" name="delete" id="'+ json[i].ITEMVENDA_id +'" class="btn btn-danger btn-xs">delete</button>',
+					] ).draw();			
+				}
+				var pValor;
+				valorTotal += vparcial; 
+				pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
+				$('#totalVenda').text('Total: '+ pValor);
+			
+      	}
+    	},
+		
         buttons: [
-				{
-					extend: 'print',						
-		text: 'Imprimir',
-		key: {
-			key: 'p',
-			altkey: true
-					},
-					
-					exportOptions: {  // ESCOLHER COLUNAS PARA SEREM IMPRIMIDAS
-			columns: [ 0, 1, 2, 3, 4, 5 ]
-					}
-			},
+            {
+            extend: 'print',						
+            text: 'Imprimir',
+            key: {
+            key: 'p',
+            altkey: true
+            },    
+            exportOptions: {  // ESCOLHER COLUNAS PARA SEREM IMPRIMIDAS
+            columns: [ 0, 1, 2, 3, 4,5 ]
+            }
+            },
         ],
+		dom: 'Blfrtip',
+		//dom: 'Blfltip,
+		// "ajax": {
+		// 	"method": "GET",
+		// 	"url": "http://localhost/ApiSC/public/itensvenda/"+idVenda,
+		// 	//"dataType": "application/json; charset=utf-8",
+		// 	"dataSrc": "",
+		// 	"sAjaxDataProp": "",
+		// },
+		// "columns": [
+		// 	{"data": "id"},
+		// 	{"data": "id"},
+		// 	{"data": "valor"},
+		// 	{"data": "qtd"},
+		// 	{"data": "UNIDADE_id"},
+		// ],
+
         "language": {
             "lengthMenu": "Mostrando _MENU_ registros por página",
             "zeroRecords": "Nada encontrado",
@@ -272,13 +338,18 @@
 			"createdCell": function (td, cellData, rowData, row, col) {
 					$(td).css('padding', '5px 0 0 16px')
 			}
-			} ],
-			order: [[6, "desc"]]
+			},
+			// {
+			// "defaultContent": "-",
+			// "targets": "_all"
+			// }
+			],
+		order: [[6, "desc"]]
 			
 				
 		});
-	t.buttons().container().appendTo( $('.col-sm-6:eq(0)', t.table().container() ) );
- 
+	//t.buttons().container().appendTo( $('.col-sm-6:eq(0)', t.table().container() ) );
+
     $('#addrow').on( 'click', function () {
 		var nPedido = $('#Npedido').val();
 		var qtd = $('#qtd').val();
@@ -295,7 +366,7 @@
 		var p = parseFloat(preco);
 		var precoItem = 0;
 
-		unidade == 1 ? precoItem = p * parseInt(qtdCx) * qtd : precoItem = p * parseInt(qtdUnidade) * qtd;
+		unidade == 1 ? precoItem = p * parseInt(qtdCx) * qtd : precoItem = p * parseInt(qtdUnidade) * qtd;	
 
 		if(nomeProduto && idProduto && preco && qtd){       
 			$.ajax({
@@ -336,7 +407,6 @@
 						'<td>'+ sprecoItem +'<td/>',						
 						'<td>'+ idItemVenda +'<td/>',
 						'<button type="button" name="delete" id="'+ idItemVenda +'" class="btn btn-danger btn-xs">delete</button>'
-						
 					] ).draw();			
 				},
 				error: function( jqXhr, textStatus, errorThrown ){
@@ -345,16 +415,17 @@
 				}
 			});
 
-		$('#NProduto').val('');
-		$('#NProduto').focus();
-		$('#qtd').val('');
-		$('#preco').val('');
+            $('#NProduto').val('');
+            $('#NProduto').focus();
+            $('#qtd').val('');
+            $('#preco').val('');
 		}else{
 			alert('Os campos precisam ser corretamente preenchidos!');
 			$('#Nproduto').focus();     
 		}
     });
 
+    
 	$('#tabela_pedido').on( 'click', "tr button[name='delete']", function (){
 		var id = $(this).attr("id");
 		var tr = $(this).closest("tr");
@@ -373,23 +444,21 @@
 					valorTotal -= valorItem;
 					pValor = valorTotal.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'});
 					$('#totalVenda').text('Total: '+ pValor);
-
 				}
 			});
 			t.row( row ).remove().draw( false ); // deletar linha da datatable
 		}
 	});
 
-	var data = $('#dataVenda').val();
-    //Exploda a data para entrar no formato aceito pelo DB.
-    var dataP = data.split("/");			
-    var dataBanco = dataP[2]+'-'+dataP[1]+'-'+dataP[0];
 		
 	$('#btnVender').on('click', function(){
 		if(!t.data().count()){
 			alert("Nenhum produto inserido na venda");
 		}else{
 			var idVenda = $('#Npedido').val();
+			var data = $('#dataVenda').val();
+			var dataP = data.split("/");			
+			var dataBanco = dataP[2]+'-'+dataP[1]+'-'+dataP[0];
 			$.ajax({
 					url: 'http://localhost/ApiSC/public/venda/'+ idVenda,
 					type: 'post',
@@ -405,13 +474,7 @@
 			});
 		}
 	});
-		
-  
 
-	// $(window).bind('beforeunload', function(){
-	// 	return '>>>>>Before You Go<<<<<<<< \n Your custom message go here';
-	// });
-		
+});
 
-	});
 </script>
